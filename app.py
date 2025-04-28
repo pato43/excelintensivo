@@ -1,4 +1,3 @@
-# app.py
 import streamlit as st
 from fpdf import FPDF
 import io
@@ -14,14 +13,18 @@ st.set_page_config(
 st.markdown(
     """
     <style>
+    /* Fondo y texto generales */
     .css-18e3th9 { background-color: #1e1e1e; color: #fafafa; }
     .css-1d391kg { background-color: #1e1e1e; }
+    /* Inputs */
     .stTextInput input, .stNumberInput input {
         background-color: #333; color: #fafafa;
     }
+    /* Botones */
     .stButton>button, .stDownloadButton>button {
         background-color: #0e639c; color: #fafafa; border: none;
     }
+    /* Checkbox */
     .stCheckbox>div>input { accent-color: #0e639c; }
     </style>
     """,
@@ -63,6 +66,7 @@ if st.button("Generar comprobante PDF"):
     elif not accepted:
         st.error("Debes aceptar compartir tus datos para continuar.")
     else:
+        # Crear PDF
         pdf = FPDF()
         pdf.add_page()
         pdf.set_font("Arial", "B", 16)
@@ -94,11 +98,12 @@ if st.button("Generar comprobante PDF"):
             "Teléfono: 7225597963"
         )
 
-        # Preparar buffer para descarga
-        pdf_buffer = io.BytesIO()
-        pdf.output(pdf_buffer)
+        # Generar PDF en memoria (dest='S' devuelve los bytes)
+        pdf_bytes = pdf.output(dest='S').encode('latin-1')
+        pdf_buffer = io.BytesIO(pdf_bytes)
         pdf_buffer.seek(0)
 
+        # Botón de descarga
         st.download_button(
             label="📥 Descargar comprobante (PDF)",
             data=pdf_buffer,
